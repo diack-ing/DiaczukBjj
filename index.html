@@ -30,8 +30,24 @@ nav a:hover{color:#bbb}
 .info h3{font-size:20px;margin-bottom:9px}
 .info p{color:#666;font-size:14px;line-height:1.4;margin-bottom:15px}
 .preco{font-size:21px;font-weight:800;margin-bottom:15px}
-.comprar{display:block;text-align:center;background:#111;color:#fff;padding:12px;border-radius:5px;text-decoration:none;font-weight:700}
+.comprar{display:block;text-align:center;background:#111;color:#fff;padding:12px;border-radius:5px;text-decoration:none;font-weight:700;border:0;width:100%;cursor:pointer;font-size:15px}
 .comprar:hover{background:#333}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal.ativo{display:flex}
+.pedido-box{background:#fff;width:min(480px,100%);border-radius:12px;padding:25px;position:relative;box-shadow:0 10px 35px rgba(0,0,0,.25)}
+.fechar{position:absolute;right:15px;top:10px;border:0;background:none;font-size:28px;cursor:pointer}
+.pedido-box h2{margin-bottom:8px}
+.pedido-produto{color:#666;margin-bottom:20px}
+.campo{margin-bottom:16px}
+.campo label{display:block;font-weight:700;margin-bottom:7px}
+.campo select,.campo input,.campo textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:6px;font-size:15px}
+.campo textarea{min-height:90px;resize:vertical}
+.quantidade{display:flex;align-items:center;gap:12px}
+.quantidade button{width:38px;height:38px;border:1px solid #ccc;background:#f5f5f5;border-radius:6px;font-size:20px;cursor:pointer}
+.quantidade input{text-align:center;width:70px}
+.total{font-size:20px;font-weight:800;margin:18px 0}
+.enviar{width:100%;border:0;background:#111;color:#fff;padding:14px;border-radius:6px;font-weight:700;font-size:16px;cursor:pointer}
+.enviar:hover{background:#333}
 footer{background:#050505;color:#fff;text-align:center;padding:28px;margin-top:10px}
 @media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){
@@ -83,6 +99,40 @@ nav{justify-content:center;gap:16px}
   <p>© 2026 DiaczukBJJ — Todos os direitos reservados.</p>
 </footer>
 
+<div class="modal" id="modalPedido">
+  <div class="pedido-box">
+    <button class="fechar" onclick="fecharPedido()" aria-label="Fechar">×</button>
+    <h2>Área do Pedido</h2>
+    <div class="pedido-produto" id="pedidoProduto"></div>
+
+    <div class="campo">
+      <label for="tamanho">Tamanho</label>
+      <select id="tamanho">
+        <option>A1</option><option>A2</option><option>A3</option>
+        <option>A4</option><option>A5</option><option>A6</option><option>A7</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Quantidade</label>
+      <div class="quantidade">
+        <button type="button" onclick="alterarQuantidade(-1)">−</button>
+        <input id="quantidade" type="number" value="1" min="1" readonly>
+        <button type="button" onclick="alterarQuantidade(1)">+</button>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="observacao">Observação</label>
+      <textarea id="observacao" placeholder="Ex.: cor, preferência, endereço ou outra informação..."></textarea>
+    </div>
+
+    <div class="total" id="pedidoTotal">Total: R$ 0,00</div>
+
+    <button class="enviar" onclick="enviarPedido()">Enviar pedido pelo WhatsApp</button>
+  </div>
+</div>
+
 <script>
 /*
 ====================================================
@@ -95,73 +145,94 @@ Se quiser trocar o nome de um produto, altere "nome".
 */
 
 const produtos = [
-  {
-    nome: "Faixas DiaczukBJJ",
-    descricao: "Faixas para diferentes graduações.",
-    preco: 99.90,
-    imagem: "faixas.png"
-  },
-  {
-    nome: "Rash Guard",
-    descricao: "Camisa de compressão para treino.",
-    preco: 109.90,
-    imagem: "rashguard.png"
-  },
-  {
-    nome: "Short Jiu-Jitsu",
-    descricao: "Short leve e confortável para treinos.",
-    preco: 49.90,
-    imagem: "short.png"
-  },
-  {
-    nome: "Kimono DiaczukBJJ",
-    descricao: "Kimono para treino e competição.",
-    preco: 549.90,
-    imagem: "kimono.png"
-  }
+  {nome:"Faixas DiaczukBJJ", descricao:"Faixas para diferentes graduações.", preco:99.90, imagem:"faixas.png"},
+  {nome:"Rash Guard", descricao:"Camisa de compressão para treino.", preco:109.90, imagem:"rashguard.png"},
+  {nome:"Short Jiu-Jitsu", descricao:"Short leve e confortável para treinos.", preco:49.90, imagem:"short.png"},
+  {nome:"Kimono DiaczukBJJ", descricao:"Kimono para treino e competição.", preco:549.90, imagem:"kimono.png"}
 ];
 
-/*
-====================================================
-BOTÃO COMPRAR
-Coloque aqui o número de WhatsApp da academia.
-Use somente números, com código do país.
-Exemplo: 5551999999999
-====================================================
-*/
 const whatsapp = "5551981391007";
+let produtoSelecionado = null;
 
 function moeda(valor) {
-  return valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-  });
+  return valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 }
 
 const lista = document.getElementById("listaProdutos");
 
-produtos.forEach(produto => {
-  const mensagem = encodeURIComponent(
-    "Olá! Tenho interesse em comprar: " + produto.nome +
-    " - " + moeda(produto.preco)
-  );
-
+produtos.forEach((produto, index) => {
   const card = document.createElement("article");
   card.className = "card";
-
+  card.id = "produto-" + index;
   card.innerHTML = `
     <img src="${produto.imagem}" alt="${produto.nome}">
     <div class="info">
       <h3>${produto.nome}</h3>
       <p>${produto.descricao}</p>
       <div class="preco">${moeda(produto.preco)}</div>
-      <a class="comprar" href="https://wa.me/${whatsapp}?text=${mensagem}" target="_blank">
-        Comprar pelo WhatsApp
-      </a>
+      <button class="comprar" onclick="abrirPedido(${index})">Comprar</button>
     </div>
   `;
-
   lista.appendChild(card);
+});
+
+function abrirPedido(index) {
+  produtoSelecionado = produtos[index];
+  document.getElementById("pedidoProduto").textContent =
+    produtoSelecionado.nome + " — " + moeda(produtoSelecionado.preco);
+  document.getElementById("quantidade").value = 1;
+  document.getElementById("observacao").value = "";
+  atualizarTotal();
+  document.getElementById("modalPedido").classList.add("ativo");
+}
+
+function fecharPedido() {
+  document.getElementById("modalPedido").classList.remove("ativo");
+}
+
+function alterarQuantidade(valor) {
+  const campo = document.getElementById("quantidade");
+  const atual = parseInt(campo.value,10) || 1;
+  campo.value = Math.max(1, atual + valor);
+  atualizarTotal();
+}
+
+function atualizarTotal() {
+  if (!produtoSelecionado) return;
+  const quantidade = parseInt(document.getElementById("quantidade").value,10) || 1;
+  document.getElementById("pedidoTotal").textContent =
+    "Total: " + moeda(produtoSelecionado.preco * quantidade);
+}
+
+function enviarPedido() {
+  if (!produtoSelecionado) return;
+
+  const tamanho = document.getElementById("tamanho").value;
+  const quantidade = parseInt(document.getElementById("quantidade").value,10) || 1;
+  const observacao = document.getElementById("observacao").value.trim();
+  const total = produtoSelecionado.preco * quantidade;
+
+  const linkProduto =
+    window.location.origin + window.location.pathname + "#produto-" + produtos.indexOf(produtoSelecionado);
+
+  const mensagem =
+`🥋 *NOVO PEDIDO — DIACZUKBJJ*
+
+*Produto:* ${produtoSelecionado.nome}
+*Tamanho:* ${tamanho}
+*Quantidade:* ${quantidade}
+*Valor unitário:* ${moeda(produtoSelecionado.preco)}
+*Total:* ${moeda(total)}
+
+*Observação:* ${observacao || "Nenhuma"}
+
+🔗 *Produto:* ${linkProduto}`;
+
+  window.open("https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(mensagem), "_blank");
+}
+
+document.getElementById("modalPedido").addEventListener("click", function(e) {
+  if (e.target === this) fecharPedido();
 });
 </script>
 
