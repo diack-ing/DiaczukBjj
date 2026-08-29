@@ -29,7 +29,9 @@ nav a:hover{color:#bbb}
 .info{padding:20px}
 .info h3{font-size:20px;margin-bottom:9px}
 .info p{color:#666;font-size:14px;line-height:1.4;margin-bottom:15px}
-.preco{font-size:21px;font-weight:800}
+.preco{font-size:21px;font-weight:800;margin-bottom:15px}
+.comprar{display:block;text-align:center;background:#111;color:#fff;padding:12px;border-radius:5px;text-decoration:none;font-weight:700}
+.comprar:hover{background:#333}
 footer{background:#050505;color:#fff;text-align:center;padding:28px;margin-top:10px}
 @media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){
@@ -69,44 +71,7 @@ nav{justify-content:center;gap:16px}
     <h2>Nossos Produtos</h2>
     <p>Equipamentos e vestuário para quem vive o Jiu-Jitsu.</p>
   </div>
-
-  <div class="grid">
-    <article class="card">
-      <img src="faixas.png" alt="Faixas DiaczukBJJ">
-      <div class="info">
-        <h3>Faixas DiaczukBJJ</h3>
-        <p>Faixas para diferentes graduações.</p>
-        <div class="preco">R$ 89,90</div>
-      </div>
-    </article>
-
-    <article class="card">
-      <img src="rashguard.png" alt="Rash Guard DiaczukBJJ">
-      <div class="info">
-        <h3>Rash Guard</h3>
-        <p>Camisa de compressão para treino.</p>
-        <div class="preco">R$ 149,90</div>
-      </div>
-    </article>
-
-    <article class="card">
-      <img src="short.png" alt="Short DiaczukBJJ">
-      <div class="info">
-        <h3>Short Jiu-Jitsu</h3>
-        <p>Short leve e confortável para treinos.</p>
-        <div class="preco">R$ 119,90</div>
-      </div>
-    </article>
-
-    <article class="card">
-      <img src="kimono.png" alt="Kimono DiaczukBJJ">
-      <div class="info">
-        <h3>Kimono DiaczukBJJ</h3>
-        <p>Kimono para treino e competição.</p>
-        <div class="preco">R$ 299,90</div>
-      </div>
-    </article>
-  </div>
+  <div class="grid" id="listaProdutos"></div>
 </section>
 
 <section id="sobre" style="padding:20px 7% 60px;text-align:center">
@@ -117,6 +82,88 @@ nav{justify-content:center;gap:16px}
 <footer id="contato">
   <p>© 2026 DiaczukBJJ — Todos os direitos reservados.</p>
 </footer>
+
+<script>
+/*
+====================================================
+EDITE OS PREÇOS AQUI
+Basta alterar o número depois de "preco:".
+Exemplo: preco: 199.90
+
+Se quiser trocar o nome de um produto, altere "nome".
+====================================================
+*/
+
+const produtos = [
+  {
+    nome: "Faixas DiaczukBJJ",
+    descricao: "Faixas para diferentes graduações.",
+    preco: 99.90,
+    imagem: "faixas.png"
+  },
+  {
+    nome: "Rash Guard",
+    descricao: "Camisa de compressão para treino.",
+    preco: 109.90,
+    imagem: "rashguard.png"
+  },
+  {
+    nome: "Short Jiu-Jitsu",
+    descricao: "Short leve e confortável para treinos.",
+    preco: 49.90,
+    imagem: "short.png"
+  },
+  {
+    nome: "Kimono DiaczukBJJ",
+    descricao: "Kimono para treino e competição.",
+    preco: 549.90,
+    imagem: "kimono.png"
+  }
+];
+
+/*
+====================================================
+BOTÃO COMPRAR
+Coloque aqui o número de WhatsApp da academia.
+Use somente números, com código do país.
+Exemplo: 5551999999999
+====================================================
+*/
+const whatsapp = "5551981391007";
+
+function moeda(valor) {
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
+
+const lista = document.getElementById("listaProdutos");
+
+produtos.forEach(produto => {
+  const mensagem = encodeURIComponent(
+    "Olá! Tenho interesse em comprar: " + produto.nome +
+    " - " + moeda(produto.preco)
+  );
+
+  const card = document.createElement("article");
+  card.className = "card";
+
+  card.innerHTML = `
+    <img src="${produto.imagem}" alt="${produto.nome}">
+    <div class="info">
+      <h3>${produto.nome}</h3>
+      <p>${produto.descricao}</p>
+      <div class="preco">${moeda(produto.preco)}</div>
+      <a class="comprar" href="https://wa.me/${whatsapp}?text=${mensagem}" target="_blank">
+        Comprar pelo WhatsApp
+      </a>
+    </div>
+  `;
+
+  lista.appendChild(card);
+});
+</script>
 
 </body>
 </html>
