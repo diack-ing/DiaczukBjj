@@ -1,287 +1,122 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>DiaczukBJJ</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            color: #111;
-        }
-
-        header {
-            background: #111;
-            color: white;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 7%;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        nav {
-            display: flex;
-            gap: 30px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .banner {
-            height: 400px;
-            background: linear-gradient(
-                rgba(0,0,0,0.65),
-                rgba(0,0,0,0.65)
-            ),
-            url("https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=1600&q=80");
-
-            background-size: cover;
-            background-position: center;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-        }
-
-        .banner h1 {
-            font-size: 52px;
-            margin-bottom: 15px;
-        }
-
-        .banner p {
-            font-size: 20px;
-            margin-bottom: 25px;
-        }
-
-        .botao {
-            background: white;
-            color: #111;
-            padding: 14px 30px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-        }
-
-        .produtos {
-            padding: 60px 7%;
-        }
-
-        .titulo {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .titulo h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .lista-produtos {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-        }
-
-        .produto {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.10);
-        }
-
-        .produto img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-        }
-
-        .produto-info {
-            padding: 20px;
-        }
-
-        .produto-info h3 {
-            margin-bottom: 10px;
-        }
-
-        .produto-info p {
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .preco {
-            font-size: 21px;
-            font-weight: bold;
-        }
-
-        footer {
-            background: #111;
-            color: white;
-            text-align: center;
-            padding: 30px;
-        }
-
-        @media (max-width: 900px) {
-            .lista-produtos {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            header {
-                height: auto;
-                padding: 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .lista-produtos {
-                grid-template-columns: 1fr;
-            }
-
-            .banner h1 {
-                font-size: 38px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DiaczukBJJ</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;color:#111}
+header{background:#050505;color:#fff;min-height:82px;display:flex;align-items:center;justify-content:space-between;padding:12px 7%;gap:25px}
+.logo-area{display:flex;align-items:center;gap:14px}
+.logo-area img{width:58px;height:58px;object-fit:cover;border-radius:50%;border:1px solid #444}
+.logo-text{font-size:28px;font-weight:800;letter-spacing:1px}
+nav{display:flex;gap:28px;flex-wrap:wrap}
+nav a{color:#fff;text-decoration:none;font-size:16px}
+nav a:hover{color:#bbb}
+.hero{min-height:430px;background:linear-gradient(rgba(0,0,0,.70),rgba(0,0,0,.70)),url("kimono.png") center/cover;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;padding:40px 20px}
+.hero h1{font-size:54px;margin-bottom:12px}
+.hero p{font-size:20px;margin-bottom:28px}
+.btn{display:inline-block;background:#fff;color:#111;padding:14px 30px;border-radius:5px;text-decoration:none;font-weight:700}
+.produtos{padding:60px 7%}
+.titulo{text-align:center;margin-bottom:38px}
+.titulo h2{font-size:34px;margin-bottom:8px}
+.titulo p{color:#666}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.10);transition:.25s}
+.card:hover{transform:translateY(-5px)}
+.card img{width:100%;height:290px;object-fit:cover;display:block}
+.info{padding:20px}
+.info h3{font-size:20px;margin-bottom:9px}
+.info p{color:#666;font-size:14px;line-height:1.4;margin-bottom:15px}
+.preco{font-size:21px;font-weight:800}
+footer{background:#050505;color:#fff;text-align:center;padding:28px;margin-top:10px}
+@media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+header{flex-direction:column;padding:18px 20px}
+nav{justify-content:center;gap:16px}
+.hero{min-height:360px}
+.hero h1{font-size:40px}
+.grid{grid-template-columns:1fr}
+}
+</style>
 </head>
-
 <body>
 
-    <header>
+<header>
+  <div class="logo-area">
+    <img src="logo.png" alt="Logo DiaczukBJJ">
+    <div class="logo-text">DiaczukBJJ</div>
+  </div>
+  <nav>
+    <a href="#">Início</a>
+    <a href="#produtos">Produtos</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#contato">Contato</a>
+  </nav>
+</header>
 
-        <div class="logo">
-            DiaczukBJJ
-        </div>
+<section class="hero">
+  <div>
+    <h1>DiaczukBJJ</h1>
+    <p>Disciplina • Foco • Evolução • Jiu-Jitsu</p>
+    <a class="btn" href="#produtos">Ver produtos</a>
+  </div>
+</section>
 
-        <nav>
-            <a href="#">Início</a>
-            <a href="#produtos">Produtos</a>
-            <a href="#">Sobre</a>
-            <a href="#">Contato</a>
-        </nav>
+<section class="produtos" id="produtos">
+  <div class="titulo">
+    <h2>Nossos Produtos</h2>
+    <p>Equipamentos e vestuário para quem vive o Jiu-Jitsu.</p>
+  </div>
 
-    </header>
+  <div class="grid">
+    <article class="card">
+      <img src="faixas.png" alt="Faixas DiaczukBJJ">
+      <div class="info">
+        <h3>Faixas DiaczukBJJ</h3>
+        <p>Faixas para diferentes graduações.</p>
+        <div class="preco">R$ 89,90</div>
+      </div>
+    </article>
 
-    <section class="banner">
+    <article class="card">
+      <img src="rashguard.png" alt="Rash Guard DiaczukBJJ">
+      <div class="info">
+        <h3>Rash Guard</h3>
+        <p>Camisa de compressão para treino.</p>
+        <div class="preco">R$ 149,90</div>
+      </div>
+    </article>
 
-        <div>
-            <h1>DiaczukBJJ</h1>
+    <article class="card">
+      <img src="short.png" alt="Short DiaczukBJJ">
+      <div class="info">
+        <h3>Short Jiu-Jitsu</h3>
+        <p>Short leve e confortável para treinos.</p>
+        <div class="preco">R$ 119,90</div>
+      </div>
+    </article>
 
-            <p>
-                Equipamentos para quem vive o Jiu-Jitsu.
-            </p>
+    <article class="card">
+      <img src="kimono.png" alt="Kimono DiaczukBJJ">
+      <div class="info">
+        <h3>Kimono DiaczukBJJ</h3>
+        <p>Kimono para treino e competição.</p>
+        <div class="preco">R$ 299,90</div>
+      </div>
+    </article>
+  </div>
+</section>
 
-            <a href="#produtos" class="botao">
-                Ver produtos
-            </a>
-        </div>
+<section id="sobre" style="padding:20px 7% 60px;text-align:center">
+  <h2>DiaczukBJJ</h2>
+  <p style="margin-top:10px;color:#666">Disciplina, foco e evolução através do Jiu-Jitsu.</p>
+</section>
 
-    </section>
-
-    <section class="produtos" id="produtos">
-
-        <div class="titulo">
-
-            <h2>Produtos</h2>
-
-            <p>
-                Confira nossos produtos de Jiu-Jitsu
-            </p>
-
-        </div>
-
-        <div class="lista-produtos">
-
-            <div class="produto">
-
-                <img
-                    src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80"
-                    alt="Kimono"
-                >
-
-                <div class="produto-info">
-                    <h3>Kimono Jiu-Jitsu</h3>
-                    <p>Kimono para treino e competição.</p>
-                    <div class="preco">R$ 299,90</div>
-                </div>
-
-            </div>
-
-            <div class="produto">
-
-                <img
-                    src="https://images.unsplash.com/photo-1549476464-37392f717541?auto=format&fit=crop&w=800&q=80"
-                    alt="Faixa"
-                >
-
-                <div class="produto-info">
-                    <h3>Faixa de Jiu-Jitsu</h3>
-                    <p>Faixas para diferentes graduações.</p>
-                    <div class="preco">R$ 89,90</div>
-                </div>
-
-            </div>
-
-            <div class="produto">
-
-                <img
-                    src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=800&q=80"
-                    alt="Rash Guard"
-                >
-
-                <div class="produto-info">
-                    <h3>Rash Guard</h3>
-                    <p>Camisa de compressão para treino.</p>
-                    <div class="preco">R$ 149,90</div>
-                </div>
-
-            </div>
-
-            <div class="produto">
-
-                <img
-                    src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80"
-                    alt="Short"
-                >
-
-                <div class="produto-info">
-                    <h3>Short Jiu-Jitsu</h3>
-                    <p>Short confortável para treino.</p>
-                    <div class="preco">R$ 119,90</div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <footer>
-
-        <p>
-            © 2026 DiaczukBJJ - Todos os direitos reservados.
-        </p>
-
-    </footer>
+<footer id="contato">
+  <p>© 2026 DiaczukBJJ — Todos os direitos reservados.</p>
+</footer>
 
 </body>
 </html>
