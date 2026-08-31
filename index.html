@@ -107,10 +107,7 @@ nav{justify-content:center;gap:16px}
 
     <div class="campo">
       <label for="tamanho">Tamanho</label>
-      <select id="tamanho">
-        <option>A1</option><option>A2</option><option>A3</option>
-        <option>A4</option><option>A5</option><option>A6</option><option>A7</option>
-      </select>
+      <select id="tamanho"></select>
     </div>
 
     <div class="campo">
@@ -128,7 +125,6 @@ nav{justify-content:center;gap:16px}
     </div>
 
     <div class="total" id="pedidoTotal">Total: R$ 0,00</div>
-
     <button class="enviar" onclick="enviarPedido()">Enviar pedido pelo WhatsApp</button>
   </div>
 </div>
@@ -136,34 +132,60 @@ nav{justify-content:center;gap:16px}
 <script>
 /*
 ====================================================
-EDITE OS PREÇOS AQUI
-Basta alterar o número depois de "preco:".
-Exemplo: preco: 199.90
-
-Se quiser trocar o nome de um produto, altere "nome".
+EDITE OS PRODUTOS AQUI
 ====================================================
 */
 
 const produtos = [
-  {nome:"Faixas DiaczukBJJ", descricao:"Faixas para diferentes graduações.", preco:99.90, imagem:"faixas.png"},
-  {nome:"Rash Guard", descricao:"Camisa de compressão para treino.", preco:109.90, imagem:"rashguard.png"},
-  {nome:"Short Jiu-Jitsu", descricao:"Short leve e confortável para treinos.", preco:49.90, imagem:"short.png"},
-  {nome:"Kimono DiaczukBJJ", descricao:"Kimono para treino e competição.", preco:549.90, imagem:"kimono.png"}
+  {
+    nome:"Faixas DiaczukBJJ",
+    descricao:"Faixas para diferentes graduações.",
+    preco:99.90,
+    imagem:"faixas.png",
+    tamanhos:["A1","A2","A3","A4"]
+  },
+  {
+    nome:"Rash Guard",
+    descricao:"Camisa de compressão para treino.",
+    preco:109.90,
+    imagem:"rashguard.png",
+    tamanhos:["P","M","G","GG"]
+  },
+  {
+    nome:"Short Jiu-Jitsu",
+    descricao:"Short leve e confortável para treinos.",
+    preco:49.90,
+    imagem:"short.png",
+    tamanhos:["P","M","G","GG"]
+  },
+  {
+    nome:"Kimono DiaczukBJJ",
+    descricao:"Kimono para treino e competição.",
+    preco:549.90,
+    imagem:"kimono.png",
+    tamanhos:["A1","A2","A3","A4","A5"]
+  }
 ];
 
+/* Número do WhatsApp */
 const whatsapp = "5551981391007";
+
 let produtoSelecionado = null;
 
 function moeda(valor) {
-  return valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  return valor.toLocaleString("pt-BR", {
+    style:"currency",
+    currency:"BRL"
+  });
 }
 
 const lista = document.getElementById("listaProdutos");
 
-produtos.forEach((produto, index) => {
+produtos.forEach((produto,index) => {
   const card = document.createElement("article");
   card.className = "card";
   card.id = "produto-" + index;
+
   card.innerHTML = `
     <img src="${produto.imagem}" alt="${produto.nome}">
     <div class="info">
@@ -173,16 +195,31 @@ produtos.forEach((produto, index) => {
       <button class="comprar" onclick="abrirPedido(${index})">Comprar</button>
     </div>
   `;
+
   lista.appendChild(card);
 });
 
 function abrirPedido(index) {
   produtoSelecionado = produtos[index];
+
   document.getElementById("pedidoProduto").textContent =
     produtoSelecionado.nome + " — " + moeda(produtoSelecionado.preco);
+
+  const selectTamanho = document.getElementById("tamanho");
+  selectTamanho.innerHTML = "";
+
+  produtoSelecionado.tamanhos.forEach(function(tamanho) {
+    const option = document.createElement("option");
+    option.value = tamanho;
+    option.textContent = tamanho;
+    selectTamanho.appendChild(option);
+  });
+
   document.getElementById("quantidade").value = 1;
   document.getElementById("observacao").value = "";
+
   atualizarTotal();
+
   document.getElementById("modalPedido").classList.add("ativo");
 }
 
@@ -193,27 +230,42 @@ function fecharPedido() {
 function alterarQuantidade(valor) {
   const campo = document.getElementById("quantidade");
   const atual = parseInt(campo.value,10) || 1;
+
   campo.value = Math.max(1, atual + valor);
+
   atualizarTotal();
 }
 
 function atualizarTotal() {
   if (!produtoSelecionado) return;
-  const quantidade = parseInt(document.getElementById("quantidade").value,10) || 1;
+
+  const quantidade =
+    parseInt(document.getElementById("quantidade").value,10) || 1;
+
   document.getElementById("pedidoTotal").textContent =
-    "Total: " + moeda(produtoSelecionado.preco * quantidade);
+    "Total: " +
+    moeda(produtoSelecionado.preco * quantidade);
 }
 
 function enviarPedido() {
   if (!produtoSelecionado) return;
 
   const tamanho = document.getElementById("tamanho").value;
-  const quantidade = parseInt(document.getElementById("quantidade").value,10) || 1;
-  const observacao = document.getElementById("observacao").value.trim();
-  const total = produtoSelecionado.preco * quantidade;
+
+  const quantidade =
+    parseInt(document.getElementById("quantidade").value,10) || 1;
+
+  const observacao =
+    document.getElementById("observacao").value.trim();
+
+  const total =
+    produtoSelecionado.preco * quantidade;
 
   const linkProduto =
-    window.location.origin + window.location.pathname + "#produto-" + produtos.indexOf(produtoSelecionado);
+    window.location.origin +
+    window.location.pathname +
+    "#produto-" +
+    produtos.indexOf(produtoSelecionado);
 
   const mensagem =
 `🥋 *NOVO PEDIDO — DIACZUKBJJ*
@@ -228,7 +280,13 @@ function enviarPedido() {
 
 🔗 *Produto:* ${linkProduto}`;
 
-  window.open("https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(mensagem), "_blank");
+  window.open(
+    "https://wa.me/" +
+    whatsapp +
+    "?text=" +
+    encodeURIComponent(mensagem),
+    "_blank"
+  );
 }
 
 document.getElementById("modalPedido").addEventListener("click", function(e) {
